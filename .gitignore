@@ -1,2 +1,6 @@
 **/.idea/
 shared/database/*.db
+
+**/.env
+**/.env.*
+!.env.example
