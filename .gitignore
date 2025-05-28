@@ -4,3 +4,6 @@ shared/database/*.db
 **/.env
 **/.env.*
 !.env.example
+
+services/fetchie/.profile/
+!services/fetchie/.profile/.gitkeep
