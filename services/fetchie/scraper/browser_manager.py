@@ -1,4 +1,7 @@
 import os
+import random
+import time
+
 import config
 
 from loguru import logger
@@ -24,9 +27,13 @@ class BrowserManager:
             logger.info("BrowserManager instance already exists.")
 
     def init_driver(self):
+        width, height = (random.randint(800, 1920), random.randint(600, 1080))
+
         service = Service(config.DRIVER_PATH)
         options = webdriver.ChromeOptions()
         options.add_argument(f"user-data-dir={os.path.abspath(config.DRIVER_PROFILE_PATH)}")
+        options.add_argument(f"window-size={width},{height}")
+
 
         self._driver = webdriver.Chrome(service=service, options=options)
 
@@ -39,5 +46,10 @@ class BrowserManager:
         if self._driver:
             self._driver.quit()
             logger.info("WebDriver quit successfully.")
+            return True
         else:
             logger.error("WebDriver is not initialized, cannot quit.")
+            return False
+
+    def random_wait(self, min=1, max=5):
+        time.sleep(random.uniform(min. max))
