@@ -7,3 +7,5 @@ shared/database/*.db
 
 services/fetchie/.profile/
 !services/fetchie/.profile/.gitkeep
+
+*.log
