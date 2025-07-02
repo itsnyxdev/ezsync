@@ -1,0 +1,70 @@
+services:
+  mariadb:
+    image: mariadb:lts-ubi
+    container_name: mariadb
+    hostname: mariadb
+    env_file:
+      - .env
+    restart: unless-stopped
+    environment:
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "${MARIADB_ALLOW_EMPTY_ROOT_PASSWORD}"
+      MARIADB_ALLOW_EMPTY_PASSWORD: "${MARIADB_ALLOW_EMPTY_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+      MARIADB_DATABASE: "${MARIADB_DATABASE}"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./shared/logs/databases/mariadb:/var/log/mysql
+      - ./shared/database/mariadb.cnf:/etc/mysql/conf.d/my.cnf
+      - ./shared/database/scripts/mariadb_init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - db_network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    hostname: mongodb
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+    volumes:
+      - ./shared/database/scripts/mongodb_init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - mongodb_data:/data/db
+      - ./shared/logs/databases/mongodb:/var/log/mongodb
+    ports:
+      - "27017:27017"
+    networks:
+      - db_network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    env_file:
+      - .env
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      ME_CONFIG_MONGODB_ADMINPASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_SERVER: "${ME_CONFIG_MONGODB_SERVER}"
+    ports:
+      - "8081:8081"
+    networks:
+      - db_network
+    depends_on:
+      - mongodb
+
+
+volumes:
+  mariadb_data:
+  mongodb_data:
+
+networks:
+  db_network:
+    driver: bridge
+    name: db-network
