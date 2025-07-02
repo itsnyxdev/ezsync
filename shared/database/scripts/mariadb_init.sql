@@ -1,0 +1,3 @@
+CREATE USER 'admin'@'%' IDENTIFIED BY '';
+GRANT ALL PRIVILEGES ON ezsync.* TO 'admin'@'%';
+FLUSH PRIVILEGES;

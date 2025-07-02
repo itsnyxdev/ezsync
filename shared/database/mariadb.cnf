@@ -1,0 +1,5 @@
+[mysqld]
+
+bind-address = 0.0.0.0
+plugin-load-add = simple_password_check.so
+simple_password_check_level = 0
