@@ -2,6 +2,8 @@ import os
 import random
 import time
 
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+
 import config
 
 from loguru import logger
@@ -52,4 +54,21 @@ class BrowserManager:
             return False
 
     def random_wait(self, min=1, max=5):
-        time.sleep(random.uniform(min. max))
+        time.sleep(random.uniform(min, max))
+
+    def random_mouse_position(self):
+        width, height = self.get_viewports()
+        x = random.random() * width
+        y = random.random() * height
+
+        action = ActionBuilder(self._driver)
+        action.pointer_action.move_by(x, y)
+        action.perform()
+
+
+    def get_viewports(self):
+        window = self._driver.get_window_size()
+        height = window['height']
+        width = window['width']
+
+        return width, height
