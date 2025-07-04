@@ -27,7 +27,7 @@ services:
     image: mongo:latest
     container_name: mongodb
     hostname: mongodb
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env
     environment:
