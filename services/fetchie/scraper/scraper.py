@@ -2,6 +2,7 @@ from scraper.account_manager import AccountManager
 from scraper.browser_manager import BrowserManager
 from loguru import logger
 import config
+from scraper.job_scraper import JobScraper
 
 
 class Scraper:
@@ -19,14 +20,14 @@ class Scraper:
         account_manager = AccountManager()
         account_manager.set_browser_manager(self.browser_manager)
 
-        driver.implicitly_wait(10)
         driver.get(config.ENDPOINT_FEED)
-        browser_manager.random_wait()
+        BrowserManager.random_wait(3,6)
 
         if not account_manager.is_logged_in():
             account_manager.login()
-        else:
-            pass
+
+        job_scraper = JobScraper()
+        job_scraper.start()
 
     def end(self):
         if self.browser_manager and self.browser_manager.quit_driver():
