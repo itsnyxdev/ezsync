@@ -2,6 +2,7 @@ import config
 from loguru import logger
 
 from scraper.browser_manager import BrowserManager
+from selenium.webdriver.common.by import By
 
 
 class AccountManager:
@@ -30,7 +31,7 @@ class AccountManager:
             return False
 
         try:
-            self.driver.find_element_by_css_selector("img.global-nav__me-photo")
+            self.driver.find_element(By.CSS_SELECTOR, "img.global-nav__me-photo")
             logger.info("User is logged in.")
             return True
         except Exception as e:
@@ -44,13 +45,15 @@ class AccountManager:
 
         self.driver.get("https://www.linkedin.com/login")
 
-        email_input = self.driver.find_element_by_name("session_key")
-        password_input = self.driver.find_element_by_name("session_password")
-        login_button = self.driver.find_element_by_css_selector("button[type='submit']")
+        email_input = self.driver.find_element(By.ID, "username")
+        password_input = self.driver.find_element(By.ID, "password")
+        login_button = self.driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
 
         email_input.send_keys(self.email)
         password_input.send_keys(self.password)
         login_button.click()
+
+        self.browser_manager.random_wait(2,6)
 
         if self.is_logged_in():
             logger.info("Login successful.")
