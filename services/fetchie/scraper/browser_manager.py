@@ -1,6 +1,7 @@
 import os
 import random
 import time
+from urllib.parse import urlencode
 
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 
@@ -56,6 +57,7 @@ class BrowserManager:
     def random_wait(self, min=1, max=5):
         time.sleep(random.uniform(min, max))
 
+    @staticmethod
     def random_mouse_position(self):
         width, height = self.get_viewports()
         x = random.random() * width
@@ -65,6 +67,10 @@ class BrowserManager:
         action.pointer_action.move_by(x, y)
         action.perform()
 
+    def scroll_down(self):
+        self._driver.execute_script(f"window.scrollTo(0, document.body.scrollHeight);")
+        self.random_wait(1,3)
+
 
     def get_viewports(self):
         window = self._driver.get_window_size()
@@ -72,3 +78,13 @@ class BrowserManager:
         width = window['width']
 
         return width, height
+
+    @staticmethod
+    def create_url(endpoint, params=None):
+        if not params:
+            return endpoint
+
+        query_str = urlencode(params)
+        final_url = f"{endpoint}?{query_str}"
+
+        return final_url
