@@ -44,21 +44,18 @@ db.createCollection("jobs", {
     validator: {
         $jsonSchema: {
             bsonType: "object",
-            required: ["slug", "title", "description", "location", "company", "levelType", "jobId", "categoryId", "modifiedAt"],
+            required: ["slug", "title", "location", "company", "levelType", "jobId", "categoryId", "modifiedAt"],
             properties: {
                 slug: {
                     bsonType: "string",
-                    minLength: 10,
                     maxLength: 120
                 },
                 title: {
                     bsonType: "string",
-                    minLength: 10,
                     maxLength: 256
                 },
                 description: {
                     bsonType: "string",
-                    minLength: 32,
                     maxLength: 1024
                 },
                 location: {
@@ -88,8 +85,12 @@ db.createCollection("jobs", {
                     bsonType: "date"
                 },
                 levelType: {
-                    bsonType: "string",
-                    enum: ["entry", "mid", "senior"]
+                    bsonType: "array",
+                    items: {
+                        bsonType: "string",
+                        enum: ["entry", "mid", "senior"]
+                    },
+                    minItems: 1
                 }
             }
         }
@@ -102,7 +103,6 @@ db.jobs.createIndex(
             slug: 1
     },
     {
-        unique: true,
         name: "jobsSlugIdx"
     }
 )
