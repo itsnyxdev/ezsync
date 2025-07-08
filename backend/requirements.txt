@@ -1,5 +1,6 @@
 annotated-types==0.7.0
 anyio==4.9.0
+bcrypt==4.3.0
 click==8.2.1
 colorama==0.4.6
 dnspython==2.7.0
@@ -7,9 +8,14 @@ fastapi==0.116.0
 greenlet==3.2.3
 h11==0.16.0
 idna==3.10
+mariadb==1.1.12
 motor==3.7.1
+packaging==25.0
+passlib==1.7.4
 pydantic==2.11.7
-pydantic_core==2.35.2
+pydantic-settings==2.10.1
+pydantic_core==2.33.2
+PyJWT==2.10.1
 pymongo==4.13.2
 PyMySQL==1.1.1
 python-dotenv==1.1.1
