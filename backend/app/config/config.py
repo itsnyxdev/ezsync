@@ -7,7 +7,7 @@ load_dotenv()
 class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     SECRET_KEY_ALGORITHM: str = os.getenv("SECRET_KEY_ALGORITHM")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN"))
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
     MARIADB_USER: str = os.getenv("MARIADB_USER")
     MARIADB_PASSWORD: str = os.getenv("MARIADB_PASSWORD")
