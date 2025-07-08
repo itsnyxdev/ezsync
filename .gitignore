@@ -9,3 +9,5 @@ services/fetchie/.profile/
 !services/fetchie/.profile/.gitkeep
 
 *.log
+
+**/__pycache__/
