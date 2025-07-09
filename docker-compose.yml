@@ -1,6 +1,6 @@
 services:
   mariadb:
-    image: mariadb:lts-ubi
+    image: mariadb:latest
     container_name: mariadb
     hostname: mariadb
     env_file:
@@ -8,18 +8,15 @@ services:
     restart: unless-stopped
     environment:
       MARIADB_USER: "${MARIADB_USER}"
-      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "${MARIADB_ALLOW_EMPTY_ROOT_PASSWORD}"
-      MARIADB_ALLOW_EMPTY_PASSWORD: "${MARIADB_ALLOW_EMPTY_PASSWORD}"
-      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
       MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
       MARIADB_DATABASE: "${MARIADB_DATABASE}"
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "${MARIADB_ALLOW_EMPTY_ROOT_PASSWORD}"
     ports:
       - "3306:3306"
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./shared/logs/databases/mariadb:/var/log/mysql
-      - ./shared/database/mariadb.cnf:/etc/mysql/conf.d/my.cnf
-      - ./shared/database/scripts/mariadb_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./shared/database/mariadb.cnf:/etc/mysql/conf.d/my.cnf:ro
     networks:
       - db_network
 
