@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.getenv("SECRET_KEY")
     SECRET_KEY_ALGORITHM: str = os.getenv("SECRET_KEY_ALGORITHM")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
+    REFRESH_TOKEN_EXPIRE_DAYS: int = int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS"))
 
     MARIADB_USER: str = os.getenv("MARIADB_USER")
     MARIADB_PASSWORD: str = os.getenv("MARIADB_PASSWORD")
@@ -25,5 +26,10 @@ class Settings(BaseSettings):
     MONGODB_PORT: str = os.getenv("MONGODB_PORT")
     MONGODB_DATABASE: str = os.getenv("MONGODB_DATABASE")
     MONGODB_URI: str = f"mongodb://{MONGODB_USER}:{MONGODB_PASSWORD}@{MONGODB_HOST}:{MONGODB_PORT}/?authSource=admin"
+
+    PLUGIN_DIR: str = r"C:\Program Files\MariaDB\MariaDB Connector C 64-bit\lib\plugin"
+
+    class Config:
+        env_file = ".env"
 
 settings = Settings()
