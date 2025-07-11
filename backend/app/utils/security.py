@@ -20,23 +20,23 @@ def generate_jwt_token(payload_data: dict, expiration_duration: timedelta) -> tu
     expiration_time = datetime.now(timezone.utc) + expiration_duration
     jwt_id = str(uuid.uuid4())
     token_payload.update({"exp": expiration_time, "jti": jwt_id})
-    jwt_token = jwt.encode(token_payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+    jwt_token = jwt.encode(token_payload, settings.secret_key, algorithm=settings.algorithm)
     return jwt_token, jwt_id
 
 
 def generate_access_token(payload_data: dict) -> tuple[str, str]:
-    access_token_expiration = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expiration = timedelta(minutes=settings.access_token_expire_minutes)
     return generate_jwt_token(payload_data, access_token_expiration)
 
 
 def generate_refresh_token(payload_data: dict) -> tuple[str, str]:
-    refresh_token_expiration = timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
+    refresh_token_expiration = timedelta(days=settings.refresh_token_expire_days)
     return generate_jwt_token(payload_data, refresh_token_expiration)
 
 
 def decode_jwt_token(token: str) -> dict | None:
     try:
-        decoded_payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        decoded_payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
         return decoded_payload
     except JWTError:
         return None

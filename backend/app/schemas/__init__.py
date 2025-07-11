@@ -1,2 +1,2 @@
 from .user import UserCreate, UserAsResponse
-from .token import Token, TokenAsData
+from .token import TokenSchema, TokenAsData

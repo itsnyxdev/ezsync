@@ -2,18 +2,21 @@ import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from app.utils.database import close_mariadb, init_mariadb
-
+from app.api.v1.auth import router as auth_router
+from app.models import Base
+from app.utils.database import close_mariadb, init_mariadb, engine
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_mdb, = await asyncio.gather(init_mariadb())
-    app.state.mariadb = init_mdb
+    async with engine.begin() as connection:
+        await connection.run_sync(Base.metadata.create_all)
     yield
-    await asyncio.gather(close_mariadb(app.state.mariadb))
+    await engine.dispose()
 
 app = FastAPI(title="EzSync API", debug=True, lifespan=lifespan)
+
+app.include_router(router=auth_router, prefix="/api")
 
 @app.get("/")
 def root():
