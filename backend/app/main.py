@@ -5,7 +5,6 @@ from fastapi import FastAPI
 from app.utils.database import close_mariadb, init_mariadb
 
 
-app = FastAPI(title="EzSync API", debug=True)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -13,6 +12,8 @@ async def lifespan(app: FastAPI):
     app.state.mariadb = init_mdb
     yield
     await asyncio.gather(close_mariadb(app.state.mariadb))
+
+app = FastAPI(title="EzSync API", debug=True, lifespan=lifespan)
 
 @app.get("/")
 def root():
