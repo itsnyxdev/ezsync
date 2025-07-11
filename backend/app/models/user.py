@@ -1,5 +1,5 @@
 from sqlalchemy import BigInteger, Identity, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models import Base, HasTimestamps
 
@@ -18,3 +18,5 @@ class User(Base, HasTimestamps):
     username: Mapped[str] = mapped_column(String(10), nullable=False, index=True)
     password: Mapped[str] = mapped_column(Text, nullable=False)
     full_name: Mapped[str] = mapped_column(String(255), nullable=True)
+
+    tokens = relationship("Token", back_populates="user", cascade="all, delete-orphan")
