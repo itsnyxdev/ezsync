@@ -25,5 +25,4 @@ class Settings(BaseSettings):
     test_mariadb_name: str
     test_mariadb_uri: str
 
-
 settings = Settings()
