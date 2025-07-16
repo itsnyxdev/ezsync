@@ -21,7 +21,7 @@ class Scraper:
         account_manager.set_browser_manager(self.browser_manager)
 
         driver.get(config.ENDPOINT_FEED)
-        BrowserManager.random_wait(3,6)
+        BrowserManager.random_wait(min=2, max=5)
 
         if not account_manager.is_logged_in():
             account_manager.login()

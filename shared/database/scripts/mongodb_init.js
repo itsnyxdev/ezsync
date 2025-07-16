@@ -55,8 +55,7 @@ db.createCollection("jobs", {
                     maxLength: 256
                 },
                 description: {
-                    bsonType: "string",
-                    maxLength: 1024
+                    bsonType: "string"
                 },
                 location: {
                     bsonType: "object",
@@ -125,4 +124,5 @@ db.jobs.createIndex(
         name: "jobsModifictionIdx"
     }
 );
+
 
