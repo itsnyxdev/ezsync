@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Body, Request
 from fastapi.security import OAuth2PasswordRequestForm
-from fastapi_csrf_protect import CsrfProtect
 
 from sqlalchemy import or_, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,8 +25,7 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post("/register", response_model=UserAsResponse, status_code=status.HTTP_201_CREATED, response_class=JSONResponse)
-async def register(response: Response, request: Request, user_in: UserCreate, db: AsyncSession = Depends(get_db_session), csrf_protect: CsrfProtect = Depends()):
-    await csrf_protect.validate_csrf(request)
+async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db_session)):
 
     query = select(User).where(or_(User.username == user_in.username, User.email == user_in.email))
     existing_user = await db.scalar(query)
@@ -47,8 +45,7 @@ async def register(response: Response, request: Request, user_in: UserCreate, db
     await db.commit()
     await db.refresh(new_user)
 
-    csrf_protect.unset_csrf_cookie(response)
-    return response
+    return new_user
 
 
 @router.post("/login", response_model=TokenSchema)

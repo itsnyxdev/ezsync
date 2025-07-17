@@ -26,9 +26,6 @@ class Settings(BaseSettings):
     test_mariadb_name: str
     test_mariadb_uri: str
 
-class CsrfSettings(BaseSettings):
-    secret_key: str = "secret_key"
-
 
 settings = Settings()
 

@@ -1,12 +1,18 @@
 from dataclasses import Field
+from enum import StrEnum
 from typing import Annotated
 
+from annotated_types import Len
 from pydantic import PlainValidator
 
-from app.utils import is_password_safe
+from .helpers import is_password_safe
 
-PasswordStr = Annotated[str, Field(min_length=8, max_length=128, description="Password must be between 8 and 128 characters long"),
+PasswordStr = Annotated[str,
     PlainValidator(is_password_safe)
-
 ]
-UsernameStr = Annotated[str, Field(min_length=4, max_length=10, description="Username must be between 4 and 10 characters long")]
+UsernameStr = Annotated[str, Len(4, 10)]
+
+class LevelType(StrEnum):
+    entry = "entry"
+    mid = "mid"
+    senior = "senior"
