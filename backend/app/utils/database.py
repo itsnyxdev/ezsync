@@ -4,7 +4,7 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.config import settings
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine, async_sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, AsyncEngine
 from sqlalchemy.orm import sessionmaker
 
 from app.models import Base

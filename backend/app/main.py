@@ -1,12 +1,11 @@
-import asyncio
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends, Request, status
+from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from app.api.v1.auth import router as auth_router
 from app.api.v1.jobs import router as jobs_router
 from app.models import Base
-from app.utils.database import close_mariadb, init_mariadb, engine, init_mongodb
+from app.utils.database import engine, init_mongodb
 
 
 @asynccontextmanager
