@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Annotated
 
 from beanie import PydanticObjectId
-from fastapi import APIRouter, Depends, HTTPException, status, Body
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.params import Query
 
 from app.dependencies import get_authenticated_user
 from app.models import User
@@ -18,7 +19,7 @@ async def get_all_categories(user: User = Depends(get_authenticated_user)):
 
 
 @router.get("/", response_model=JobsResponse)
-async def get_jobs(filters: JobsFilterRequest = Body(...), user: User = Depends(get_authenticated_user)):
+async def get_jobs(filters: Annotated[JobsFilterRequest, Query()], user: User = Depends(get_authenticated_user)):
     try:
         query_filters = {}
 
@@ -58,6 +59,7 @@ async def get_jobs(filters: JobsFilterRequest = Body(...), user: User = Depends(
                 levels=job.levels,
                 modified_at=job.modified_at,
                 category_id=job.category_id,
+                job_id=job.job_id
             )
             for job in jobs
         ]
@@ -76,7 +78,7 @@ async def get_jobs(filters: JobsFilterRequest = Body(...), user: User = Depends(
 
     except Exception:
         raise HTTPException(
-            status_code=status,
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch jobs",
         )
 

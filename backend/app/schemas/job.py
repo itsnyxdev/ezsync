@@ -21,6 +21,7 @@ class JobResponse(BaseModel):
     levels: List[LevelType]
     modified_at: datetime
     category_id: PydanticObjectId
+    job_id: PydanticObjectId
 
     model_config = ConfigDict(
         json_encoders={PydanticObjectId: str, datetime: lambda v: v.isoformat()}

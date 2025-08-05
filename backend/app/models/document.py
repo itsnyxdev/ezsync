@@ -10,6 +10,7 @@ from app.utils.types import LevelType
 
 
 class Category(Document):
+    id: PydanticObjectId
     name: str = Field(alias="name")
     created_at: float =  Field(alias="createdAt")
 
@@ -25,6 +26,7 @@ class Job(Document):
     levels: List[LevelType] = Field(alias="levelType")
     modified_at: datetime.datetime = Field(alias="modifiedAt")
     category_id: PydanticObjectId = Field(alias="categoryId")
+    job_id: PydanticObjectId = Field(alias="jobId")
 
     class Settings:
         name = "jobs"
