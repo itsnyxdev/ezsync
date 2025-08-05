@@ -1,6 +1,8 @@
 import datetime
 
+from attr.validators import max_len
 from bson import ObjectId, Timestamp
+from duckdb.duckdb import description
 from loguru import logger
 from selenium.webdriver.common.by import By
 from slugify import slugify
@@ -27,13 +29,16 @@ class JobScraper:
 
         driver.get(ENDPOINT_JOBS)
         logger.info("Jobs page is loading.")
-        driver.implicitly_wait(10)
+        driver.implicitly_wait(5)
         logger.info("Jobs page was successfully loaded.")
+
 
         for category in categories:
             _id = category['_id']
             name = category['name']
             self.collect(_id, name, driver)
+
+        self.get_descriptions(driver)
 
     def collect(self, _id, name, driver):
         logger.info(f"Start scraping for category: {_id}:'{name}'")
@@ -72,7 +77,10 @@ class JobScraper:
             jobs_companies = driver.find_elements(By.CLASS_NAME, "artdeco-entity-lockup__subtitle")
             jobs_details = zip(jobs_titles, jobs_locations, jobs_links, jobs_companies)
 
-            self.save_jobs(level, _id, jobs_details)
+            if not jobs_titles:
+                logger.error("No jobs found.")
+            else:
+                self.save_jobs(level, _id, jobs_details)
 
     def save_jobs(self, level, category_id, jobs_details):
         db = DBConnection().get_db()
@@ -93,7 +101,7 @@ class JobScraper:
                 logger.info(f"Saving new job: {title.text} - {link.get_attribute('href')}")
 
                 job_data = {
-                    "slug": slugify(title.text),
+                    "slug": slugify(text=title.text, max_length=120),
                     "title": title.text,
                     "company": company.text,
                     "location": {
@@ -116,6 +124,58 @@ class JobScraper:
                 )
 
                 logger.info(f"Job saved: {title.text} - {link.get_attribute('href')}")
+
+    def get_descriptions(self, driver):
+        db = DBConnection().get_db()
+        jobs_collection = db['jobs']
+
+        jobs = jobs_collection.find({
+            "$or": [
+                {
+                    "description": { "$exists": False }
+                },
+                {
+                    "description": None
+                },
+                {
+                    "description": ""
+                }
+            ]
+        })
+
+        if not jobs:
+            logger.error("No jobs without description found.")
+            return False
+
+        for job in jobs:
+            link = job['link']
+
+            logger.info(f"Fetching job description: {link}")
+            driver.get(link)
+            driver.implicitly_wait(5)
+
+            description_query = driver.find_element(By.CSS_SELECTOR, "#job-details > div")
+            job_description = description_query.get_attribute("innerHTML")
+
+            logger.info(f"Updating job description: {job['title']}")
+
+            result = jobs_collection.update_one(
+                {
+                    "_id": job['_id']
+                },
+                {
+                    "$set": {
+                        "description": job_description
+                    }
+                }
+            )
+
+            if result.matched_count > 0:
+                logger.info(f"Job description updated: {job['title']}")
+            else:
+                logger.info(f"Job description not updated: {job['title']}")
+
+        return True
 
     def scroll(self, driver):
         logger.info("Scrolling down the page to load more jobs.")
