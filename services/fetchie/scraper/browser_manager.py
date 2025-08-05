@@ -3,6 +3,7 @@ import random
 import time
 from urllib.parse import urlencode
 
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.actions.action_builder import ActionBuilder
 
 import config
@@ -30,15 +31,15 @@ class BrowserManager:
             logger.info("BrowserManager instance already exists.")
 
     def init_driver(self):
-        width, height = (random.randint(800, 1920), random.randint(600, 1080))
-
-        service = Service(config.DRIVER_PATH)
-        options = webdriver.ChromeOptions()
+        options = Options()
+        options.add_argument("--headless=new")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--window-size=1920,1080")
         options.add_argument(f"user-data-dir={os.path.abspath(config.DRIVER_PROFILE_PATH)}")
-        options.add_argument(f"window-size={width},{height}")
 
 
-        self._driver = webdriver.Chrome(service=service, options=options)
+        self._driver = webdriver.Chrome(options=options)
 
     def get_driver(self):
         if not self._driver:
@@ -54,7 +55,8 @@ class BrowserManager:
             logger.error("WebDriver is not initialized, cannot quit.")
             return False
 
-    def random_wait(self, min=1, max=5):
+    @staticmethod
+    def random_wait(min=1, max=5):
         time.sleep(random.uniform(min, max))
 
     @staticmethod

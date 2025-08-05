@@ -1,3 +1,4 @@
+from fastapi_csrf_protect import CsrfProtect
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
@@ -27,3 +28,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+

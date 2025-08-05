@@ -53,7 +53,7 @@ class AccountManager:
         password_input.send_keys(self.password)
         login_button.click()
 
-        self.browser_manager.random_wait(2,6)
+        BrowserManager.random_wait()
 
         if self.is_logged_in():
             logger.info("Login successful.")
