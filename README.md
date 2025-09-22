@@ -38,7 +38,7 @@ The platform has three main parts: a Vue.js web app for users, a FastAPI backend
 
 EZ Sync uses a **Microservices Architecture** where different parts work separately and can grow independently:
 
-![EZ Sync Architecture](docs/architecture.svg)
+<img src="./docs/architecture.svg"/>
 
 **Main Parts:**
 
